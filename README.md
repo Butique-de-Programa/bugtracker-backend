@@ -50,5 +50,3 @@
 - Serilog for logging  
 - Docker support (optional)
 
-
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
