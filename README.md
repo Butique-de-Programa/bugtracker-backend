@@ -49,6 +49,3 @@
 - Swagger for testing  
 - Serilog for logging  
 - Docker support (optional)
-
-
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa

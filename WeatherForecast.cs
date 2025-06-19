@@ -1,4 +1,4 @@
-namespace TodoApi;
+namespace BugTracker;
 
 public class WeatherForecast
 {
