@@ -1,12 +1,15 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using BugTracker.Data;
 using BugTracker.Models;
 
 namespace BugTracker.Controllers;
 
+[Authorize(Roles = "Admin")]
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
+
 public class UserController : ControllerBase
 {
     private readonly BugTrackerContext _context;
@@ -23,9 +26,9 @@ public class UserController : ControllerBase
         return await _context.Users.ToListAsync();
     }
 
-    // GET /user/5
+    // GET /user/abc123
     [HttpGet("{id}")]
-    public async Task<ActionResult<User>> GetById(long id)
+    public async Task<ActionResult<User>> GetById(string id)
     {
         var user = await _context.Users.FindAsync(id);
 
@@ -42,14 +45,14 @@ public class UserController : ControllerBase
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetById), new { id = user.ID }, user);
+        return CreatedAtAction(nameof(GetById), new { id = user.Id }, user);
     }
 
-    // PUT /user/5
+    // PUT /user/abc123
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(long id, User user)
+    public async Task<IActionResult> Update(string id, User user)
     {
-        if (id != user.ID)
+        if (id != user.Id)
             return BadRequest();
 
         _context.Entry(user).State = EntityState.Modified;
@@ -60,7 +63,7 @@ public class UserController : ControllerBase
         }
         catch (DbUpdateConcurrencyException)
         {
-            if (!_context.Users.Any(e => e.ID == id))
+            if (!await _context.Users.AnyAsync(e => e.Id == id))
                 return NotFound();
             else
                 throw;
@@ -69,9 +72,9 @@ public class UserController : ControllerBase
         return NoContent();
     }
 
-    // DELETE /user/5
+    // DELETE /user/abc123
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(long id)
+    public async Task<IActionResult> Delete(string id)
     {
         var user = await _context.Users.FindAsync(id);
         if (user == null)

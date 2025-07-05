@@ -1,12 +1,14 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using BugTracker.Data;
 using BugTracker.Models;
 
 namespace BugTracker.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Authorize]
+[Route("api/[controller]")]
 public class ProjectController : ControllerBase
 {
     private readonly BugTrackerContext _context;
@@ -70,6 +72,7 @@ public class ProjectController : ControllerBase
     }
 
     // DELETE /project/5
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(long id)
     {

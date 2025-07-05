@@ -49,3 +49,10 @@
 - Swagger for testing  
 - Serilog for logging  
 - Docker support (optional)
+
+
+How to run:
+
+## 💾 Docker
+```bash
+docker-compose up -d

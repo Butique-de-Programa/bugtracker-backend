@@ -7,7 +7,7 @@ public class Issue
     public required string Description { get; set; } = string.Empty;
     public bool Status { get; set; }
     public required string Priority { get; set; } = string.Empty;
-    public string? CreatedBy { get; set; }
+    public required User CreatedBy { get; set; }
     public string? AssignedTo { get; set; }
     public DateTime Timestamps { get; set; }
 
