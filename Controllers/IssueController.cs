@@ -62,24 +62,34 @@ public class IssueController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(long id, Issue issue)
     {
-        if (id != issue.ID)
-            return BadRequest();
+    var existingIssue = await _context.Issues
+        .Include(i => i.CreatedBy)
+        .FirstOrDefaultAsync(i => i.ID == id);
 
-        _context.Entry(issue).State = EntityState.Modified;
+    if (existingIssue == null)
+        return NotFound();
 
-        try
-        {
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!_context.Issues.Any(e => e.ID == id))
-                return NotFound();
-            else
-                throw;
-        }
+    // Check if the field is update and then update
+    if (!string.IsNullOrWhiteSpace(issue.Title) && issue.Title != existingIssue.Title)
+        existingIssue.Title = issue.Title;
 
-        return NoContent();
+    if (!string.IsNullOrWhiteSpace(issue.Description) && issue.Description != existingIssue.Description)
+        existingIssue.Description = issue.Description;
+
+    if (issue.Status != existingIssue.Status)
+        existingIssue.Status = issue.Status;
+
+    if (!string.IsNullOrWhiteSpace(issue.Priority) && issue.Priority != existingIssue.Priority)
+        existingIssue.Priority = issue.Priority;
+
+    if (!string.IsNullOrWhiteSpace(issue.AssignedTo) && issue.AssignedTo != existingIssue.AssignedTo)
+        existingIssue.AssignedTo = issue.AssignedTo;
+
+    if (issue.Timestamps != default && issue.Timestamps != existingIssue.Timestamps)
+        existingIssue.Timestamps = issue.Timestamps;
+
+    await _context.SaveChangesAsync();
+    return NoContent();
     }
 
     // DELETE /issue/5
