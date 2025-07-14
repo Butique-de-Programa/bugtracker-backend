@@ -69,8 +69,12 @@ builder.Services.AddAuthentication(options =>
 // Automapper (Profile -> DTOs)
 builder.Services.AddAutoMapper(typeof(Program));
 
-// Swagger
-builder.Services.AddOpenApi();
+
+//  Swagger + JWT Token
+builder.Services.AddOpenApi(options =>
+{
+    options.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
+});
 
 // Add endpoints
 builder.Services.AddControllers();
@@ -90,6 +94,8 @@ if (app.Environment.IsDevelopment())
         options.Path = "";
     });
 }
+
+
 
 app.UseAuthentication();
 app.UseAuthorization();
